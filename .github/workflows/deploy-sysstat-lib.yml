@@ -21,7 +21,7 @@ jobs:
 
     - name: Transfer sysstat-offline folder using sshpass
       run: |
-        sshpass -p 'Yael1234567890' scp -r sysstat-offline/ ${{ matrix.target-machine }}
+        sudo sshpass -p 'Yael1234567890' scp -r sysstat-offline/ ${{ matrix.target-machine }}
 
     - name: Run commands on target machine using sshpass
       run: |
