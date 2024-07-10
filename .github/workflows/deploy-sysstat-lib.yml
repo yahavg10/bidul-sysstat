@@ -10,7 +10,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Copy sshpass to /usr/local/bin
         run: |
           cp sshpass /usr/local/bin/
@@ -22,8 +21,9 @@ jobs:
             /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ "${target_machine}"
             /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh "${target_machine}" << 'EOF'
               if ! rpm -q sysstat; then
-                cd /path/to/destination/sysstat-offline
-                sudo rpm -Uvh lm_sensors.rpm sysstat.rpm
+                cd sysstat-offline
+                sudo rpm -Uvh lm_sensors-libs-3.4.0-23.20180522git70f7e08.el8.x86_64.rpm
+                sudo rpm -Uvh sysstat-11.7.3-13.el8_10.x86_64.rpm
               else
                 echo "sysstat is already installed."
               fi
