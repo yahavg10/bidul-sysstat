@@ -1,7 +1,5 @@
 name: Deploy sysstat offline
-
 on: push
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
