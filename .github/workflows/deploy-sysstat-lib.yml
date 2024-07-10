@@ -13,7 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Transfer sysstat-offline folder
         env:
           SSH_PASSWORD: 'Yael1234567890'
