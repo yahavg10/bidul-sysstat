@@ -23,9 +23,8 @@ jobs:
 
       - name: Deploy sysstat-offline folder to target machine
         run: |
-          sudo /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ "${{ matrix.target_machine }}"
-
-          sudo /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh "${{ matrix.target_machine }}" << 'EOF'
+            /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ "${{ matrix.target_machine }}"
+            /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh "${{ matrix.target_machine }}" << 'EOF'
             if ! rpm -q sysstat; then
               cd /path/to/destination/sysstat-offline
               sudo rpm -Uvh lm_sensors-libs-3.4.0-23.20180522git70f7e08.el8.x86_64.rpm
