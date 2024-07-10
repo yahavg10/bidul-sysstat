@@ -2,6 +2,7 @@ name: Deploy sysstat offline
 on: push
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     env:
       SSH_PASSWORD: 'Yael1234567890'
       TARGET_MACHINES: |
