@@ -20,9 +20,8 @@ jobs:
 
       - name: Deploy sysstat-offline folder to target machine
         run: |
-          ssh -p 'Yael1234567890' vm-example@172.210.16.96
-          /usr/local/bin/sshpass -p 'Yael1234567890' scp -r sysstat-offline/ "${{ matrix.target_machine }}"
-          /usr/local/bin/sshpass -p 'Yael1234567890' ssh "${{ matrix.target_machine }}" << 'EOF'
+          /usr/local/bin/sshpass -p 'Yael1234567890' scp -o StrictHostKeyChecking=no -r sysstat-offline/ "${{ matrix.target_machine }}"
+          /usr/local/bin/sshpass -p 'Yael1234567890' ssh -o StrictHostKeyChecking=no "${{ matrix.target_machine }}" << 'EOF'
             if ! rpm -q sysstat; then
               cd /path/to/destination/sysstat-offline
               sudo rpm -Uvh lm_sensors-libs-3.4.0-23.20180522git70f7e08.el8.x86_64.rpm
