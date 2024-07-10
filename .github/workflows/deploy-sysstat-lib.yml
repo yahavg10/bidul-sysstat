@@ -5,34 +5,38 @@ on: push
 jobs:
   deploy:
     runs-on: self-hosted
-    strategy:
-      matrix:
-        target-machine:
-          - name: "vm1"
-            host: vm1-example@172.210.16.96:/root/
-            ssh_password: 'Yael1234567890'
+    env:
+      SSH_PASSWORD: 'Yael1234567890'
+      TARGET_MACHINES: |
+        vm1-example@172.210.16.96:/root/
+        vm2-example@172.210.16.97:/root/
+        # Add more target machines as needed
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Transfer sysstat-offline folder
+      - name: Copy sshpass to /usr/local/bin
         run: |
-          /usr/local/bin/sshpass -p "${{ matrix.target-machine.ssh_password }}" scp -r sysstat-offline/ "${{ matrix.target-machine.host }}"
+          cp sshpass /usr/local/bin/
+          chmod +x /usr/local/bin/sshpass
 
-      - name: Run commands on target machine
+      - name: Deploy sysstat-offline folder to target machines
         run: |
-          /usr/local/bin/sshpass -p "${{ matrix.target-machine.ssh_password }}" ssh "${{ matrix.target-machine.host }}" << 'EOF'
-            if ! rpm -q sysstat; then
-              cd /path/to/destination/sysstat-offline
-              sudo rpm -Uvh lm_sensors.rpm sysstat.rpm
-            else
-              echo "sysstat is already installed."
-            fi
+          for target_machine in $TARGET_MACHINES; do
+            /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ "${target_machine}"
+            /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh "${target_machine}" << 'EOF'
+              if ! rpm -q sysstat; then
+                cd /path/to/destination/sysstat-offline
+                sudo rpm -Uvh lm_sensors.rpm sysstat.rpm
+              else
+                echo "sysstat is already installed."
+              fi
 
-            if ! systemctl is-active --quiet sysstat; then
-              sudo systemctl start sysstat
-            else
-              echo "sysstat service is already running."
-            fi
-          EOF
+              if ! systemctl is-active --quiet sysstat; then
+                sudo systemctl start sysstat
+              else
+                echo "sysstat service is already running."
+              fi
+            EOF
+          done
