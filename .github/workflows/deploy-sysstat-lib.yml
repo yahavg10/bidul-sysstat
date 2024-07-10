@@ -15,6 +15,8 @@ jobs:
         run: |
           cp sshpass /usr/local/bin/
           chmod +x /usr/local/bin/sshpass
+          chmod -R 755 sysstats-offline/
+
 
       - name: Deploy sysstat-offline folder to target machine
         run: |
