@@ -10,7 +10,7 @@ jobs:
         target_machine:
           - vm-example@172.210.16.96:/root/
     env:
-      SSH_PASSWORD: Yael1234567890
+      SSH_PASSWORD: 'Yael1234567890'
 
     steps:
       - name: Checkout repository
