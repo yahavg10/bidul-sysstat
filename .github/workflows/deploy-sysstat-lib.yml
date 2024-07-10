@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         target_machine:
-          - vm-example@172.210.16.96:/home
+          - vm-example@172.210.16.96:/home/vm-example
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
