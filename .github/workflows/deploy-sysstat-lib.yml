@@ -1,16 +1,12 @@
 name: Deploy sysstat offline
 on: push
-
 jobs:
   deploy:
     runs-on: self-hosted
     env:
       SSH_PASSWORD: 'Yael1234567890'
       TARGET_MACHINES: |
-        vm1-example@172.210.16.96:/root/
-        vm2-example@172.210.16.97:/root/
-        # Add more target machines as needed
-
+        vm-example@172.210.16.96:/root/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
