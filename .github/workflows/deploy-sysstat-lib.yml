@@ -4,40 +4,37 @@ on: push
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
-        target-machine: 
+        target-machine:
           - vm-example@172.210.16.96:/root/
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Install sshpass
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y sshpass
+      - name: Transfer sysstat-offline folder
+        env:
+          SSH_PASSWORD: 'Yael1234567890'
+        run: |
+          /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ ${{ matrix.target-machine }}
 
-    - name: Transfer sysstat-offline folder using sshpass
-      run: |
-        sudo sshpass -p 'Yael1234567890' scp -v -r sysstat-offline/ ${{ matrix.target-machine }}
+      - name: Run commands on target machine
+        env:
+          SSH_PASSWORD: 'Yael1234567890'
+        run: |
+          /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh ${{ matrix.target-machine }} << 'EOF'
+            if ! rpm -q sysstat; then
+              cd /path/to/destination/sysstat-offline
+              sudo rpm -Uvh lm_sensors.rpm sysstat.rpm
+            else
+              echo "sysstat is already installed."
+            fi
 
-    - name: Run commands on target machine using sshpass
-      run: |
-        sshpass -p 'Yael1234567890' ssh ${{ matrix.target-machine }} << 'EOF'
-          if ! rpm -q sysstat; then
-            cd /root/sysstat-offline
-            sudo rpm -Uvh lm_sensors-libs-3.4.0-23.20180522git70f7e08.el8.x86_64.rpm
-            sudo rpm -Uvh sysstat-11.7.3-13.el8_10.x86_64.rpm
-          else
-            echo "sysstat is already installed."
-          fi
-
-          if ! systemctl is-active --quiet sysstat; then
-            sudo systemctl start sysstat
-            sudo systemctl enable sysstat
-          else
-            echo "sysstat service is already running."
-          fi
-        EOF
+            if ! systemctl is-active --quiet sysstat; then
+              sudo systemctl start sysstat
+            else
+              echo "sysstat service is already running."
+            fi
+          EOF
