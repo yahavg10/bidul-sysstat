@@ -1,5 +1,4 @@
 name: Deploy sysstat offline
-
 on: push
 
 jobs:
