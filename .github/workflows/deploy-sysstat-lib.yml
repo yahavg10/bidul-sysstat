@@ -8,22 +8,21 @@ jobs:
     strategy:
       matrix:
         target-machine:
-          - vm-example@172.210.16.96:/root/
+          - name: "vm1"
+            host: vm1-example@172.210.16.96:/root/
+            ssh_password: 'Yael1234567890'
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
       - name: Transfer sysstat-offline folder
-        env:
-          SSH_PASSWORD: 'Yael1234567890'
         run: |
-          /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ ${{ matrix.target-machine }}
+          /usr/local/bin/sshpass -p "${{ matrix.target-machine.ssh_password }}" scp -r sysstat-offline/ "${{ matrix.target-machine.host }}"
 
       - name: Run commands on target machine
-        env:
-          SSH_PASSWORD: 'Yael1234567890'
         run: |
-          /usr/local/bin/sshpass -p "${SSH_PASSWORD}" ssh ${{ matrix.target-machine }} << 'EOF'
+          /usr/local/bin/sshpass -p "${{ matrix.target-machine.ssh_password }}" ssh "${{ matrix.target-machine.host }}" << 'EOF'
             if ! rpm -q sysstat; then
               cd /path/to/destination/sysstat-offline
               sudo rpm -Uvh lm_sensors.rpm sysstat.rpm
