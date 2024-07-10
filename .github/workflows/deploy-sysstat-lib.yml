@@ -21,6 +21,10 @@ jobs:
           cp sshpass /usr/local/bin/
           chmod +x /usr/local/bin/sshpass
 
+      - name: Update SSH known hosts
+        run: |
+          ssh-keyscan 172.210.16.96 >> ~/.ssh/known_hosts
+
       - name: Deploy sysstat-offline folder to target machine
         run: |
           /usr/local/bin/sshpass -p "${SSH_PASSWORD}" scp -r sysstat-offline/ "${{ matrix.target_machine }}"
