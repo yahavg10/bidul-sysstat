@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         target_machine:
-          - vm-example@172.210.16.96:/vm-example
+          - vm-example@172.210.16.96:/
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -18,7 +18,6 @@ jobs:
 
       - name: Deploy sysstat-offline folder to target machine
         run: |
-          ls
           sudo /usr/local/bin/sshpass -p 'Yael1234567890' scp -o StrictHostKeyChecking=no -r sysstats-offline/ "${{ matrix.target_machine }}"
           sudo /usr/local/bin/sshpass -p 'Yael1234567890' ssh -o StrictHostKeyChecking=no "${{ matrix.target_machine }}" << 'EOF'
             if ! rpm -q sysstat; then
